@@ -82,6 +82,18 @@ jobs:
           PAGES_URL: https://duanyytop.github.io/agents-radar
         run: pnpm notify:feishu
 
+
+      - name: Send Discord notification
+        run: |
+          DATE=$(date -u +%Y-%m-%d)
+          REPORT_LINK="https://liumoon.github.io/agents-radar"
+          curl -s -o /dev/null -w "%{http_code}" \
+            -X POST "$DISCORD_WEBHOOK_URL" \
+            -H "Content-Type: application/json" \
+            -d "{\"content\": \"🤖 **AI Agents Radar Daily** — $DATE\\n📡 <${REPORT_LINK}|View Reports>\"}"
+        env:
+          DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+
       - name: Close stale issues
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
